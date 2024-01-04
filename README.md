@@ -10,6 +10,8 @@ The project involves data exploration, visualization, and the implementation of 
 - [Data Exploration](#data-exploration)
 - [Data Visualization](#data-visualization)
 - [Custom Regression Model](#custom-regression-model)
+- [Decision Tree Model](#decision-tree-model)
+- [SVM Model](#svm-model)
 - [Random Forest Model](#random-forest-model)
 - [Results](#results)
 - [Usage](#usage)
@@ -58,8 +60,17 @@ Visualization techniques include:
 A custom regression model is implemented using TensorFlow. 
 The architecture of the model includes multiple dense layers with different activation functions.
 
+# Decision Tree Model
+A Decision Tree model is employed to capture and understand non-linear relationships within the dataset. 
+Decision Trees are tree-like models that recursively split the data based on feature values, providing clear decision paths.
+
+# SVM Model
+A Support Vector Machine (SVM) model is utilized to capture complex relationships between features and target variables. 
+SVM is a powerful algorithm for both classification and regression tasks, and it works by finding the optimal hyperplane that best separates the data points.
+
 # Random Forest Model
-A Random Forest model is trained and evaluated to provide a benchmark for comparison with the custom regression model.
+A Random Forest model is implemented as a benchmark for comparison with the custom regression model. 
+Random Forests are an ensemble learning technique that combines multiple decision trees to improve overall performance and robustness.
 
 # Results
 The evaluation results for both the custom regression model and the Random Forest model are presented, including key metrics such as:

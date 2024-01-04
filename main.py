@@ -1,9 +1,12 @@
 from visualization.visualization import (plot_correlation_matrix, plot_distribution, 
                                         plot_correlation_with_targets, plot_target_variables_distribution, 
                                         plot_training_epochs, plot_scatter_plots, plot_actual_vs_predicted, 
-                                        plot_pairplot_selected_features)
-from models.models import (train_and_evaluate_random_forest, train_custom_regression_model, 
-                            evaluate_custom_regression_model, create_custom_regression_model)
+                                        plot_pairplot_selected_features, print_evaluation_metrics)
+
+from models.models import (train_and_evaluate_random_forest, train_and_evaluate_decision_tree, 
+                           train_and_evaluate_svm, train_custom_regression_model,
+                           evaluate_custom_regression_model, create_custom_regression_model)
+
 from preprocessing.preprocessing import preprocess_data, fetch_parkinsons_data
 import pandas as pd
 
@@ -27,9 +30,9 @@ def main():
     plot_distribution(X["NHR"])
 
     # Display scatter plots for selected features against motor_UPDRS
-    features_list = ["Jitter(%)", "Jitter(Abs)", "Jitter:RAP", "Jitter:PPQ5", "Jitter:DDP",
-                     "Shimmer", "Shimmer(dB)", "Shimmer:APQ3", "Shimmer:APQ5", "Shimmer:APQ11",
-                     "Shimmer:DDA", "NHR", "HNR", "RPDE", "DFA", "PPE"]
+    features_list = ["Jitter(%)", "Jitter(Abs)", "Jitter:DDP",
+                     "Shimmer", "Shimmer(dB)", "Shimmer:APQ3",
+                     "NHR", "HNR", "RPDE", "DFA", "PPE"]
     plot_scatter_plots(X, y, features_list)
 
     # Display histograms for motor_UPDRS and total_UPDRS
@@ -55,26 +58,38 @@ def main():
     prediction_custom_regression = trained_custom_regression_model.predict(X_test)
     plot_actual_vs_predicted(y_test, prediction_custom_regression, "Custom Regression Model")
     
-    print()
-    print(f"Explained Variance for Custom Regression: {explained_var_rf}")
-    print(f"Mean Absolute Error for Custom Regression: {mean_abs_err_rf}")
-    print(f"Mean Squared Error for Custom Regression: {mean_sq_err_rf}")
-    print(f"R^2 Score for Custom Regression: {r2_rf}")
-    print()
+    # Print evaluation metrics for Custom Regression Model
+    print_evaluation_metrics("Custom Regression Model", explained_var_rf, mean_abs_err_rf, mean_sq_err_rf, r2_rf)
 
     # Random Forest Model
-    regressor, explained_var_rf, mean_abs_err_rf, mean_sq_err_rf, r2_rf = train_and_evaluate_random_forest(X_train, y_train, X_test, y_test)
+    rf_regressor, explained_var_rf, mean_abs_err_rf, mean_sq_err_rf, r2_rf = train_and_evaluate_random_forest(X_train, y_train, X_test, y_test)
 
     # Plot Actual vs Predicted for Random Forest Model
-    y_pred_rf = regressor.predict(X_test)
+    y_pred_rf = rf_regressor.predict(X_test)
     plot_actual_vs_predicted(y_test, y_pred_rf, "Random Forest Model")
 
-    print(f"Explained Variance for Random Forest: {explained_var_rf}")
-    print(f"Mean Absolute Error for Random Forest: {mean_abs_err_rf}")
-    print(f"Mean Squared Error for Random Forest: {mean_sq_err_rf}")
-    print(f"R^2 Score for Random Forest: {r2_rf}")
-    print()
+    # Print evaluation metrics for Random Forest Model
+    print_evaluation_metrics("Random Forest Model", explained_var_rf, mean_abs_err_rf, mean_sq_err_rf, r2_rf)
 
+    # Train and evaluate Decision Tree Model
+    dt_regressor, explained_var_dt, mean_abs_err_dt, mean_sq_err_dt, r2_dt = train_and_evaluate_decision_tree(X_train, y_train, X_test, y_test)
+
+    # Plot Actual vs Predicted for Decision Tree Model
+    y_pred_dt = dt_regressor.predict(X_test)
+    plot_actual_vs_predicted(y_test, y_pred_dt, "Decision Tree Model")
+
+    # Print evaluation metrics for Decision Tree Model
+    print_evaluation_metrics("Decision Tree Model", explained_var_dt, mean_abs_err_dt, mean_sq_err_dt, r2_dt)
+
+    # Train and evaluate SVM Model
+    svm_regressor, explained_var_svm, mean_abs_err_svm, mean_sq_err_svm, r2_svm = train_and_evaluate_svm(X_train, y_train, X_test, y_test)
+
+    # Plot Actual vs Predicted for SVM Model
+    y_pred_svm = svm_regressor.predict(X_test)
+    plot_actual_vs_predicted(y_test, y_pred_svm, "SVM Model")
+
+    # Print evaluation metrics for SVM Model
+    print_evaluation_metrics("SVM Model", explained_var_svm, mean_abs_err_svm, mean_sq_err_svm, r2_svm)
 
 if __name__ == "__main__":
     main()

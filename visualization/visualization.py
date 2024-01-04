@@ -74,3 +74,12 @@ def plot_actual_vs_predicted(y_test, prediction, model_name):
     plt.ylabel("Predicted Values")
     plt.legend()
     plt.show()
+
+# Function to print evaluation metrics for regression model
+def print_evaluation_metrics(regressor, explained_var, mean_abs_err, mean_sq_err, r2):
+    print()
+    print(f"Explained Variance for {regressor}: {explained_var}")
+    print(f"Mean Absolute Error for {regressor}: {mean_abs_err}")
+    print(f"Mean Squared Error for {regressor}: {mean_sq_err}")
+    print(f"R^2 Score for {regressor}: {r2}")
+    print()

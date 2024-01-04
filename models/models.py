@@ -1,5 +1,7 @@
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, explained_variance_score
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR
 import tensorflow as tf
 
 
@@ -24,7 +26,7 @@ def create_custom_regression_model(X_train):
 def train_custom_regression_model(model, X_train, y_train, X_test, y_test):
     optimizer = tf.keras.optimizers.Adam()
     model.compile(optimizer=optimizer, loss="mse")
-    
+
     history = model.fit(X_train, y_train, epochs=200, batch_size=60, validation_data=(X_test, y_test), shuffle=True)
 
     return model, history
@@ -32,6 +34,19 @@ def train_custom_regression_model(model, X_train, y_train, X_test, y_test):
 # Function to evaluate custom regression model
 def evaluate_custom_regression_model(model, X_test, y_test):
     y_pred = model.predict(X_test)
+    
+    explained_var = explained_variance_score(y_test, y_pred)
+    mean_abs_err = mean_absolute_error(y_test, y_pred)
+    mean_sq_err = mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+
+    return explained_var, mean_abs_err, mean_sq_err, r2
+
+# Function to train and evaluate given model
+def train_and_evaluate_model(model, X_train, y_train, X_test, y_test):
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
     explained_var = explained_variance_score(y_test, y_pred)
     mean_abs_err = mean_absolute_error(y_test, y_pred)
     mean_sq_err = mean_squared_error(y_test, y_pred)
@@ -41,14 +56,18 @@ def evaluate_custom_regression_model(model, X_test, y_test):
 
 # Function to train and evaluate random forest regression model
 def train_and_evaluate_random_forest(X_train, y_train, X_test, y_test):
-    regressor = RandomForestRegressor(n_estimators=10, random_state=0)
-    regressor.fit(X_train, y_train)
+    rf_regressor = RandomForestRegressor(n_estimators=10, random_state=0)
+    explained_var, mean_abs_err, mean_sq_err, r2 = train_and_evaluate_model(rf_regressor, X_train, y_train, X_test, y_test)
+    return rf_regressor, explained_var, mean_abs_err, mean_sq_err, r2
 
-    y_pred = regressor.predict(X_test)
+# Function to train and evaluate Decision Tree regression model
+def train_and_evaluate_decision_tree(X_train, y_train, X_test, y_test):
+    dt_regressor = DecisionTreeRegressor(random_state=0)
+    explained_var, mean_abs_err, mean_sq_err, r2 = train_and_evaluate_model(dt_regressor, X_train, y_train, X_test, y_test)
+    return dt_regressor, explained_var, mean_abs_err, mean_sq_err, r2
 
-    explained_var = explained_variance_score(y_test, y_pred)
-    mean_abs_err = mean_absolute_error(y_test, y_pred)
-    mean_sq_err = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
-
-    return regressor, explained_var, mean_abs_err, mean_sq_err, r2
+# Function to train and evaluate Support Vector Machine (SVM) regression model
+def train_and_evaluate_svm(X_train, y_train, X_test, y_test):
+    svm_regressor = SVR()
+    explained_var, mean_abs_err, mean_sq_err, r2 = train_and_evaluate_model(svm_regressor, X_train, y_train, X_test, y_test)
+    return svm_regressor, explained_var, mean_abs_err, mean_sq_err, r2
